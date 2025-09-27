@@ -19,9 +19,9 @@
       </div>
 
       <div class="ml-auto flex items-center justify-center">
-        <button class="focus:outline-none cursor-pointer " @click='onDeleteClick'>
-          <svg class="ml-3 h-4 w-4 text-gray-500 hover:text-red-500" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <button class="focus:outline-none" @click="onDelete">
+          <svg class="ml-3 h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
             <path d="M19 7L18.1327 19.1425C18.0579
 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732
 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772
@@ -33,50 +33,55 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    todo: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
+<script setup lang='ts'>
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 
-  data () {
-    return {
-      title: this.todo.title,
-      isCompleted: this.todo.completed,
-    }
-  },
+interface Props {
+  todo: {
 
-  methods: {
-    updateTodo () {
-      const payload = {
-        id: this.todo.id,
-        data: {
-          title: this.title,
-          completed: this.isCompleted
-        }
-      }
-      this.$store.dispatch('updateTodo', payload)
-    },
-
-    onTitleChange () {
-      if (!this.title) {
-        return
-      }
-
-      this.updateTodo()
-    },
-
-    onCheckClick () {
-      this.isCompleted = !this.isCompleted
-      this.updateTodo()
-    },
-    onDeleteClick () {
-      this.isCompleted = !this.isCompleted
-      this.$store.dispatch('deleteTodo', this.todo.id)
-    }
-  },
+    title: string
+    completed: boolean
+    id: string
+  }
 }
+const props = defineProps<Props>()
+
+const title = ref(props.todo.title)
+const isCompleted = ref(props.todo.completed)
+const store = useStore()
+
+// On delete
+const onDelete = () => {
+  store.dispatch('deleteTodo', props.todo.id)
+}
+
+// Update todo
+const updateTodo = () => {
+  const payload = {
+    id: props.todo.id,
+    data: {
+      title: title.value,
+      completed: isCompleted.value
+    }
+  }
+  store.dispatch('updateTodo', payload)
+}
+
+// On title change
+const onTitleChange = () => {
+  if (!title.value) {
+    return
+  }
+
+  updateTodo()
+}
+
+// On check click
+const onCheckClick = () => {
+  isCompleted.value = !isCompleted.value
+  updateTodo()
+}
+
+
 </script>

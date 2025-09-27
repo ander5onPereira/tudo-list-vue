@@ -14,22 +14,17 @@ focus:outline-none cursor-pointer" type="submit">
   <!--/ Todo form -->
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      title: ''
-    }
-  },
-  methods: {
-    addTodo () {
-      if (!this.title) return
-      this.$store.dispatch('addTodo', { title: this.title, completed: false }).finally(() => {
-        this.title = ''
-      })
-
-    }
-  }
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+const store = useStore()
+const title = ref('')
+const addTodo = () => {
+  if (!title?.value) return
+  store.dispatch('addTodo', { title: title.value, completed: false }).finally(() => {
+    title.value = ''
+  })
 
 }
+
 </script>

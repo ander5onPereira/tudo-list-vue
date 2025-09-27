@@ -11,45 +11,30 @@
 
         <TodoFormAdd />
 
-        <TodoItens v-if='$store.state.todos.length' />
+        <TodoItems v-if='store.state.todos.length' />
 
         <TodoEmpty v-else />
       </template>
     </div>
   </div>
   <pre>
-  {{ $store.state.todos }}
+  {{ store.state.todos }}
 </pre>
   <!--/ Content -->
 </template>
-<script>
+<script setup lang="ts">
 import TodoEmpty from '@/components/TodoEmpty.vue';
 import TodoFormAdd from '@/components/TodoFormAdd.vue';
-import TodoItens from '@/components/TodoItens.vue';
+import TodoItems from '@/components/TodoItems.vue';
 import TodoSpinner from '@/components/TodoSpinner.vue';
 import TodoHeader from '@/components/TodoHeader.vue';
-import axios from 'axios';
-export default {
-  components: {
-    TodoEmpty,
-    TodoFormAdd,
-    TodoItens,
-    TodoSpinner,
-    TodoHeader
-  },
-  data () {
-    return {
-      loading: false,
-    }
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 
-  },
+const loading = ref(false);
+const store = useStore();
 
-  created () {
-    this.loading = true;
-    this.$store.dispatch('getTodos').then(() => this.loading = false);
-
-  }
-}
-
+loading.value = true;
+store.dispatch('getTodos').then(() => loading.value = false);
 
 </script>
