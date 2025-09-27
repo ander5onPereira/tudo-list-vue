@@ -17,9 +17,6 @@
       </template>
     </div>
   </div>
-  <pre>
-  {{ store.state.todos }}
-</pre>
   <!--/ Content -->
 </template>
 <script setup lang="ts">
